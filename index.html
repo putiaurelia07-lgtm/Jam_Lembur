@@ -6,144 +6,174 @@
 <title>Jam Lembur</title>
 
 <style>
-  :root {
-    --bg: #f4f6f8;
-    --card: #ffffff;
-    --text: #222;
-    --border: #ccc;
-    --primary: #4a90e2;
-    --hasil-bg: #eaf4ff;
-  }
+:root {
+  --bg: #f4f6f8;
+  --card: #ffffff;
+  --text: #111;
+  --border: #dcdcdc;
+  --primary: #4a90e2;
+}
 
-  body.dark {
-    --bg: #121212;
-    --card: #1e1e1e;
-    --text: #f1f1f1;
-    --border: #333;
-    --primary: #6aa9ff;
-    --hasil-bg: #1f2a38;
-  }
+body.dark {
+  --bg: #0f172a;
+  --card: #1e293b;
+  --text: #f8fafc;
+  --border: #334155;
+  --primary: #60a5fa;
+}
 
-  body {
-    font-family: Arial, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    margin: 0;
-    transition: background 0.3s, color 0.3s;
-  }
+* {
+  box-sizing: border-box;
+}
 
-  .container {
-    background: var(--card);
-    padding: 20px;
-    border-radius: 16px;
-    width: 100%;
-    max-width: 360px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-    transition: background 0.3s;
-  }
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: system-ui, sans-serif;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  transition: background 0.3s, color 0.3s;
+}
 
-  h2 {
-    text-align: center;
-    margin-bottom: 16px;
-    font-weight: 600;
-  }
+.card {
+  width: 100%;
+  max-width: 360px;
+  background: var(--card);
+  padding: 24px;
+  border-radius: 18px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  animation: fadeIn 0.6s ease;
+}
 
-  input, button {
-    width: 100%;
-    font-size: 16px;
-    padding: 10px;
-    margin: 6px 0;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    background: transparent;
-    color: var(--text);
-    transition: 0.3s;
-  }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
-  input:focus {
-    outline: none;
-    border-color: var(--primary);
-  }
+.toggle {
+  text-align: center;
+  font-size: 14px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  user-select: none;
+  color: var(--primary);
+}
 
-  button {
-    background: var(--primary);
-    color: #fff;
-    border: none;
-    cursor: pointer;
-  }
+h2 {
+  text-align: center;
+  margin: 10px 0 20px;
+}
 
-  button:hover {
-    opacity: 0.9;
-  }
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 14px;
+}
 
-  #hasil {
-    margin-top: 14px;
-    padding: 12px;
-    border-radius: 12px;
-    background: var(--hasil-bg);
-    text-align: center;
-    font-size: 18px;
-    font-weight: bold;
-    opacity: 0;
-    transform: scale(0.95);
-    transition: all 0.3s ease;
-  }
+label {
+  font-size: 13px;
+  margin-bottom: 6px;
+  opacity: 0.8;
+}
 
-  #hasil.show {
-    opacity: 1;
-    transform: scale(1);
-  }
+input {
+  height: 44px;
+  padding: 0 12px;
+  font-size: 15px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+}
 
-  .toggle {
-    text-align: center;
-    margin-bottom: 10px;
-    font-size: 14px;
-    cursor: pointer;
-    color: var(--primary);
-  }
+input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(74,144,226,0.2);
+}
 
-  @media (max-width: 480px) {
-    .container {
-      border-radius: 0;
-      min-height: 100vh;
-      box-shadow: none;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-  }
+button {
+  margin-top: 8px;
+  height: 46px;
+  border: none;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  background: var(--primary);
+  color: white;
+  cursor: pointer;
+  transition: transform 0.1s, opacity 0.2s;
+}
+
+button:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+.result {
+  margin-top: 18px;
+  padding: 14px;
+  border-radius: 14px;
+  background: rgba(74,144,226,0.08);
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: all 0.4s ease;
+}
+
+.result.show {
+  opacity: 1;
+  transform: translateY(0);
+}
 </style>
 </head>
 
 <body>
 
-<div class="container">
-
+<div class="card">
   <div class="toggle" onclick="toggleDark()">🌙 Dark Mode</div>
 
   <h2>Jam Lembur</h2>
 
-  <input type="time" id="mulai">
-  <input type="time" id="selesai">
-  <input type="number" id="istirahat" placeholder="Istirahat (menit)" min="0">
+  <div class="field">
+    <label>Jam Masuk</label>
+    <input type="time" id="mulai">
+  </div>
+
+  <div class="field">
+    <label>Jam Pulang</label>
+    <input type="time" id="selesai">
+  </div>
+
+  <div class="field">
+    <label>Istirahat (menit)</label>
+    <input type="number" id="istirahat" min="0" placeholder="0">
+  </div>
 
   <button onclick="hitung()">Hitung</button>
 
-  <div id="hasil"></div>
+  <div id="hasil" class="result"></div>
 </div>
 
 <script>
+function toggleDark() {
+  document.body.classList.toggle("dark");
+}
+
 function hitung() {
   const mulai = document.getElementById('mulai').value;
   const selesai = document.getElementById('selesai').value;
   const istirahat = parseFloat(document.getElementById('istirahat').value) || 0;
+  const hasilEl = document.getElementById('hasil');
 
   if (!mulai || !selesai) {
-    document.getElementById('hasil').textContent = "";
+    hasilEl.classList.remove("show");
+    hasilEl.textContent = "";
     return;
   }
 
@@ -152,6 +182,7 @@ function hitung() {
 
   const start = new Date(0,0,0,hm,mm,0);
   const end = new Date(0,0,0,hs,ms,0);
+
   let diff = (end - start) / 60000;
   if (diff < 0) diff += 24 * 60;
 
@@ -160,18 +191,10 @@ function hitung() {
 
   const jamDesimal = Math.round((diff / 60) * 100) / 100;
 
-  const hasil = document.getElementById('hasil');
-  hasil.textContent = jamDesimal + " jam";
-  hasil.classList.remove("show");
-  void hasil.offsetWidth; // trigger animasi
-  hasil.classList.add("show");
-}
-
-function toggleDark() {
-  document.body.classList.toggle("dark");
+  hasilEl.textContent = `Hasil Lembur: ${jamDesimal} jam`;
+  hasilEl.classList.add("show");
 }
 </script>
 
 </body>
 </html>
-    
