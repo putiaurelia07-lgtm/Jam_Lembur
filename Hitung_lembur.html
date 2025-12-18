@@ -1,0 +1,80 @@
+    <!DOCTYPE html>
+    <html lang="id">
+    <head>
+    <meta charset="UTF-8">
+    <title>Jam Lembur</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background: #fff;
+        color: #000;
+      }
+      h2 {
+        margin-bottom: 10px;
+        font-weight: normal;
+      }
+      input, button {
+        font-size: 16px;
+        padding: 6px;
+        margin: 4px 0;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+      input[type="number"] {
+        width: 120px;
+      }
+      button {
+        background: #fff;
+        cursor: pointer;
+      }
+      #hasil {
+        margin-top: 8px;
+        font-size: 18px;
+        font-weight: bold;
+      }
+    </style>
+    </head>
+    <body>
+
+    <h2>Jam Lembur</h2>
+    <input type="time" id="mulai" placeholder="Jam mulai">
+    <input type="time" id="selesai" placeholder="Jam selesai">
+    <input type="number" id="istirahat" placeholder="Istirahat (menit)" min="0">
+    <button onclick="hitung()">Hitung</button>
+    <div id="hasil"></div>
+
+    <script>
+    function hitung() {
+      const mulai = document.getElementById('mulai').value;
+      const selesai = document.getElementById('selesai').value;
+      const istirahat = parseFloat(document.getElementById('istirahat').value) || 0;
+
+      if (!mulai || !selesai) {
+        document.getElementById('hasil').textContent = "";
+        return;
+      }
+
+      const [hm, mm] = mulai.split(":").map(Number);
+      const [hs, ms] = selesai.split(":").map(Number);
+
+      const start = new Date(0,0,0,hm,mm,0);
+      const end = new Date(0,0,0,hs,ms,0);
+      let diff = (end - start) / 60000; // selisih menit
+      if (diff < 0) diff += 24 * 60; // jika lewat tengah malam
+
+      // Kurangi waktu istirahat
+      diff -= istirahat;
+      if (diff < 0) diff = 0;
+
+      const jamDesimal = Math.round((diff / 60) * 100) / 100;
+      document.getElementById('hasil').textContent = jamDesimal;
+    }
+    </script>
+
+    </body>
+    </html>
