@@ -1,80 +1,177 @@
-    <!DOCTYPE html>
-    <html lang="id">
-    <head>
-    <meta charset="UTF-8">
-    <title>Jam Lembur</title>
-    <style>
-      body {
-        font-family: sans-serif;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        background: #fff;
-        color: #000;
-      }
-      h2 {
-        margin-bottom: 10px;
-        font-weight: normal;
-      }
-      input, button {
-        font-size: 16px;
-        padding: 6px;
-        margin: 4px 0;
-        border: 1px solid #ccc;
-        border-radius: 3px;
-      }
-      input[type="number"] {
-        width: 120px;
-      }
-      button {
-        background: #fff;
-        cursor: pointer;
-      }
-      #hasil {
-        margin-top: 8px;
-        font-size: 18px;
-        font-weight: bold;
-      }
-    </style>
-    </head>
-    <body>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jam Lembur</title>
 
-    <h2>Jam Lembur</h2>
-    <input type="time" id="mulai" placeholder="Jam mulai">
-    <input type="time" id="selesai" placeholder="Jam selesai">
-    <input type="number" id="istirahat" placeholder="Istirahat (menit)" min="0">
-    <button onclick="hitung()">Hitung</button>
-    <div id="hasil"></div>
+<style>
+  :root {
+    --bg: #f4f6f8;
+    --card: #ffffff;
+    --text: #222;
+    --border: #ccc;
+    --primary: #4a90e2;
+    --hasil-bg: #eaf4ff;
+  }
 
-    <script>
-    function hitung() {
-      const mulai = document.getElementById('mulai').value;
-      const selesai = document.getElementById('selesai').value;
-      const istirahat = parseFloat(document.getElementById('istirahat').value) || 0;
+  body.dark {
+    --bg: #121212;
+    --card: #1e1e1e;
+    --text: #f1f1f1;
+    --border: #333;
+    --primary: #6aa9ff;
+    --hasil-bg: #1f2a38;
+  }
 
-      if (!mulai || !selesai) {
-        document.getElementById('hasil').textContent = "";
-        return;
-      }
+  body {
+    font-family: Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    transition: background 0.3s, color 0.3s;
+  }
 
-      const [hm, mm] = mulai.split(":").map(Number);
-      const [hs, ms] = selesai.split(":").map(Number);
+  .container {
+    background: var(--card);
+    padding: 20px;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 360px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    transition: background 0.3s;
+  }
 
-      const start = new Date(0,0,0,hm,mm,0);
-      const end = new Date(0,0,0,hs,ms,0);
-      let diff = (end - start) / 60000; // selisih menit
-      if (diff < 0) diff += 24 * 60; // jika lewat tengah malam
+  h2 {
+    text-align: center;
+    margin-bottom: 16px;
+    font-weight: 600;
+  }
 
-      // Kurangi waktu istirahat
-      diff -= istirahat;
-      if (diff < 0) diff = 0;
+  input, button {
+    width: 100%;
+    font-size: 16px;
+    padding: 10px;
+    margin: 6px 0;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    transition: 0.3s;
+  }
 
-      const jamDesimal = Math.round((diff / 60) * 100) / 100;
-      document.getElementById('hasil').textContent = jamDesimal;
+  input:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+
+  button {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  }
+
+  button:hover {
+    opacity: 0.9;
+  }
+
+  #hasil {
+    margin-top: 14px;
+    padding: 12px;
+    border-radius: 12px;
+    background: var(--hasil-bg);
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    opacity: 0;
+    transform: scale(0.95);
+    transition: all 0.3s ease;
+  }
+
+  #hasil.show {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .toggle {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    color: var(--primary);
+  }
+
+  @media (max-width: 480px) {
+    .container {
+      border-radius: 0;
+      min-height: 100vh;
+      box-shadow: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
-    </script>
+  }
+</style>
+</head>
 
-    </body>
-    </html>
+<body>
+
+<div class="container">
+
+  <div class="toggle" onclick="toggleDark()">🌙 Dark Mode</div>
+
+  <h2>Jam Lembur</h2>
+
+  <input type="time" id="mulai">
+  <input type="time" id="selesai">
+  <input type="number" id="istirahat" placeholder="Istirahat (menit)" min="0">
+
+  <button onclick="hitung()">Hitung</button>
+
+  <div id="hasil"></div>
+</div>
+
+<script>
+function hitung() {
+  const mulai = document.getElementById('mulai').value;
+  const selesai = document.getElementById('selesai').value;
+  const istirahat = parseFloat(document.getElementById('istirahat').value) || 0;
+
+  if (!mulai || !selesai) {
+    document.getElementById('hasil').textContent = "";
+    return;
+  }
+
+  const [hm, mm] = mulai.split(":").map(Number);
+  const [hs, ms] = selesai.split(":").map(Number);
+
+  const start = new Date(0,0,0,hm,mm,0);
+  const end = new Date(0,0,0,hs,ms,0);
+  let diff = (end - start) / 60000;
+  if (diff < 0) diff += 24 * 60;
+
+  diff -= istirahat;
+  if (diff < 0) diff = 0;
+
+  const jamDesimal = Math.round((diff / 60) * 100) / 100;
+
+  const hasil = document.getElementById('hasil');
+  hasil.textContent = jamDesimal + " jam";
+  hasil.classList.remove("show");
+  void hasil.offsetWidth; // trigger animasi
+  hasil.classList.add("show");
+}
+
+function toggleDark() {
+  document.body.classList.toggle("dark");
+}
+</script>
+
+</body>
+</html>
+    
